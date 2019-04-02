@@ -35,7 +35,7 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 	ProjectileMovement->Velocity = FVector(0, 0, 0);
 
 	// Bind our OnOverlapBegin Event
-	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnOverlapBegin);
+	//CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnOverlapBegin);
 
 	// Set Default Values for Variables
 	hasTargetPosition = false;
