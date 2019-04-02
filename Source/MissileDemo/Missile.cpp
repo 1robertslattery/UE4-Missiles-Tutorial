@@ -3,6 +3,9 @@
 #include "Missile.h"
 #include "MissileDemo.h"
 #include "MyCharacter.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -16,8 +19,8 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 
 	// Construct Static Mesh Component
 	MissileMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MissileMesh"));
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> MeshObj(TEXT("/Game/Missile/Missile_01_Model"));
-	MissileMesh->SetStaticMesh(MeshObj.Object);
+	//const ConstructorHelpers::FObjectFinder<UStaticMesh> MeshObj(TEXT("/Game/Missile/Missile_01_Model"));
+	//MissileMesh->SetStaticMesh(MeshObj.Object);
 	MissileMesh->SetupAttachment(RootComponent);
 
 	// Construct Projectile Movement Component
@@ -44,7 +47,7 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 	hasFinishedDelay = false;
 	lifetimeCountdown = 15.f;
 	canBeDestroyed = false;
-	PlayerInWorld = NULL;
+	PlayerCharacter = NULL;
 }
 
 #pragma region Setup Target Logic
@@ -80,9 +83,9 @@ void AMissile::FindPlayer()
 			{
 				if (FoundPlayer->ActorHasTag(PlayerTagName))
 				{
-					if (PlayerInWorld != FoundPlayer)
+					if (PlayerCharacter != FoundPlayer)
 					{
-						PlayerInWorld = FoundPlayer;
+						PlayerCharacter = FoundPlayer;
 					}
 				}
 			}
@@ -95,11 +98,11 @@ void AMissile::UpdateTarget()
 {
 	if (!hasTargetPosition)
 	{
-		if (PlayerInWorld != NULL)
+		if (target == NULL)
 		{
-			if (PlayerInWorld->IsValidLowLevel())
+			if (PlayerCharacter->IsValidLowLevel())
 			{
-				target = PlayerInWorld;
+				target = PlayerCharacter;
 				hasTargetPosition = true;
 				hasNoTarget = false;
 				
