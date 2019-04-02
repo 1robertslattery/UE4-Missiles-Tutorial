@@ -19,8 +19,6 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 
 	// Construct Static Mesh Component
 	MissileMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MissileMesh"));
-	//const ConstructorHelpers::FObjectFinder<UStaticMesh> MeshObj(TEXT("/Game/Missile/Missile_01_Model"));
-	//MissileMesh->SetStaticMesh(MeshObj.Object);
 	MissileMesh->SetupAttachment(RootComponent);
 
 	// Construct Projectile Movement Component
@@ -204,29 +202,29 @@ void AMissile::Tick(float DeltaTime)
 
 #pragma region Overlap Events
 // If our missile overlaps the player or the ground, it will be destroyed
-void AMissile::OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult)
-{
-	class AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(otherActor);
-	class AStaticMeshActor* GroundActor = Cast<AStaticMeshActor>(otherActor);
-
-	if (PlayerCharacter != nullptr)
-	{
-		PlayExplosion(ExplosionSystem);
-		PlayExplosionSound(ExplosionSound);
-
-		if (this->IsValidLowLevel())
-			Destroy();
-	}
-
-	if (GroundActor != nullptr)
-	{
-		PlayExplosion(ExplosionSystem);
-		PlayExplosionSound(ExplosionSound);
-
-		if (this->IsValidLowLevel())
-			Destroy();
-	}
-}
+//void AMissile::OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult)
+//{
+//	class AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(otherActor);
+//	class AStaticMeshActor* GroundActor = Cast<AStaticMeshActor>(otherActor);
+//
+//	if (PlayerCharacter != nullptr)
+//	{
+//		PlayExplosion(ExplosionSystem);
+//		PlayExplosionSound(ExplosionSound);
+//
+//		if (this->IsValidLowLevel())
+//			Destroy();
+//	}
+//
+//	if (GroundActor != nullptr)
+//	{
+//		PlayExplosion(ExplosionSystem);
+//		PlayExplosionSound(ExplosionSound);
+//
+//		if (this->IsValidLowLevel())
+//			Destroy();
+//	}
+//}
 #pragma endregion
 
 #pragma region End of Play Logic
