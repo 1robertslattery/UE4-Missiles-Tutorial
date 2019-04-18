@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/Actor.h"
 #include "Missile.generated.h"
 
@@ -28,8 +30,8 @@ private:
 	void Explode();
 
 	// Event to Detect When an Actor Overlaps the Missile Class
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult);
+	//UFUNCTION()
+	//void OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult);
 		
 public:	
 
@@ -43,7 +45,7 @@ protected:
 
 	// Reference To Our Player in World
 	UPROPERTY()
-	class AMyCharacter* PlayerInWorld;
+	class AActor* PlayerCharacter;
 
 public:	
 

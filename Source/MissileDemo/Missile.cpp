@@ -3,6 +3,9 @@
 #include "Missile.h"
 #include "MissileDemo.h"
 #include "MyCharacter.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -16,8 +19,6 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 
 	// Construct Static Mesh Component
 	MissileMesh = ObjectInitializer.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("MissileMesh"));
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> MeshObj(TEXT("/Game/Missile/Missile_01_Model"));
-	MissileMesh->SetStaticMesh(MeshObj.Object);
 	MissileMesh->SetupAttachment(RootComponent);
 
 	// Construct Projectile Movement Component
@@ -34,7 +35,7 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 	ProjectileMovement->Velocity = FVector(0, 0, 0);
 
 	// Bind our OnOverlapBegin Event
-	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnOverlapBegin);
+	//CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AMissile::OnOverlapBegin);
 
 	// Set Default Values for Variables
 	hasTargetPosition = false;
@@ -44,7 +45,7 @@ AMissile::AMissile(const FObjectInitializer& ObjectInitializer) : Super(ObjectIn
 	hasFinishedDelay = false;
 	lifetimeCountdown = 15.f;
 	canBeDestroyed = false;
-	PlayerInWorld = NULL;
+	PlayerCharacter = NULL;
 }
 
 #pragma region Setup Target Logic
@@ -80,9 +81,9 @@ void AMissile::FindPlayer()
 			{
 				if (FoundPlayer->ActorHasTag(PlayerTagName))
 				{
-					if (PlayerInWorld != FoundPlayer)
+					if (PlayerCharacter != FoundPlayer)
 					{
-						PlayerInWorld = FoundPlayer;
+						PlayerCharacter = FoundPlayer;
 					}
 				}
 			}
@@ -95,11 +96,11 @@ void AMissile::UpdateTarget()
 {
 	if (!hasTargetPosition)
 	{
-		if (PlayerInWorld != NULL)
+		if (target == NULL)
 		{
-			if (PlayerInWorld->IsValidLowLevel())
+			if (PlayerCharacter->IsValidLowLevel())
 			{
-				target = PlayerInWorld;
+				target = PlayerCharacter;
 				hasTargetPosition = true;
 				hasNoTarget = false;
 				
@@ -201,29 +202,29 @@ void AMissile::Tick(float DeltaTime)
 
 #pragma region Overlap Events
 // If our missile overlaps the player or the ground, it will be destroyed
-void AMissile::OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult)
-{
-	class AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(otherActor);
-	class AStaticMeshActor* GroundActor = Cast<AStaticMeshActor>(otherActor);
-
-	if (PlayerCharacter != nullptr)
-	{
-		PlayExplosion(ExplosionSystem);
-		PlayExplosionSound(ExplosionSound);
-
-		if (this->IsValidLowLevel())
-			Destroy();
-	}
-
-	if (GroundActor != nullptr)
-	{
-		PlayExplosion(ExplosionSystem);
-		PlayExplosionSound(ExplosionSound);
-
-		if (this->IsValidLowLevel())
-			Destroy();
-	}
-}
+//void AMissile::OnOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &hitResult)
+//{
+//	class AMyCharacter* PlayerCharacter = Cast<AMyCharacter>(otherActor);
+//	class AStaticMeshActor* GroundActor = Cast<AStaticMeshActor>(otherActor);
+//
+//	if (PlayerCharacter != nullptr)
+//	{
+//		PlayExplosion(ExplosionSystem);
+//		PlayExplosionSound(ExplosionSound);
+//
+//		if (this->IsValidLowLevel())
+//			Destroy();
+//	}
+//
+//	if (GroundActor != nullptr)
+//	{
+//		PlayExplosion(ExplosionSystem);
+//		PlayExplosionSound(ExplosionSound);
+//
+//		if (this->IsValidLowLevel())
+//			Destroy();
+//	}
+//}
 #pragma endregion
 
 #pragma region End of Play Logic
